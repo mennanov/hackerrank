@@ -20,25 +20,37 @@ def memoize(func):
 
 @memoize
 def stockmax(items, i=0, profit=0, shares=0):
+    """
+    Exponential time algorithm. Does not scale.
+    """
     if i >= len(items):
         return profit
 
     buy = stockmax(items, i + 1, profit - items[i], shares + 1)
 
-    sell = max(stockmax(items, i + 1, profit + (n * items[i]), shares - n) for n in
-               xrange(1, shares + 1)) if shares > 0 else 0
+    sell = stockmax(items, i + 1, profit + (items[i] * shares)) if shares > 0 else 0
 
     return max(buy, sell, profit)
+
+
+def stockmax_greedy(items):
+    """
+    Greedy algorithm. Runs in O(N) time.
+    """
+    profit = 0
+    highest = 0
+    for i in xrange(len(items) - 1, -1, -1):
+        if items[i] > highest:
+            highest = items[i]
+        profit += highest - items[i]
+    return profit
 
 
 if __name__ == '__main__':
     import sys
 
-    sys.setrecursionlimit(2 ** 20)
-
     t = int(sys.stdin.readline())
     for _ in xrange(t):
         sys.stdin.readline()
         items = tuple(map(int, sys.stdin.readline().strip().split(' ')))
-
-        print stockmax(items)
+        print stockmax_greedy(items)
