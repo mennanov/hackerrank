@@ -22,7 +22,12 @@ from collections import deque, OrderedDict
 
 
 def rust_murderer(vertices, start):
+    """
+    BFS in an implicitly defined graph: edges that are defined in a graph should be avoided,
+    meanwhile edges that don't exist should be used.
+    """
     dist = dict()
+    # instead of having "visited" nodes, we will keep "unvisited" set. It will empty faster than "visited".
     unvisited = set(vertices.keys())
     queue = deque()
     queue.append(start)
